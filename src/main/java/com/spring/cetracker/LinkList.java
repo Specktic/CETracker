@@ -1,10 +1,10 @@
 package com.spring.cetracker;
 
-public class List {
+public class LinkList {
     private Node head = null;
     private int length = 0;
 
-    public List() {
+    public LinkList() {
     }
 
     public void add(Object data) {

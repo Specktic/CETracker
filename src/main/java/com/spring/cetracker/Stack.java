@@ -1,8 +1,7 @@
 package com.spring.cetracker;
 
 public class Stack {
-    private List list;
-
+    private LinkList list;
     public Stack() {
     }
 

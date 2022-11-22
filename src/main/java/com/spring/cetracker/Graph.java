@@ -1,36 +1,39 @@
 package com.spring.cetracker;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Graph {
     List<List<Node>> graphList = new ArrayList();
 
     public Graph(List<Edge> edges) {
-        for (int i = 0; i < edges.size(); i++) {
-            graphList.add(i, new ArrayList<>());
-        }
 
-        for (Edge e : edges) {
-            graphList.get(e.start).add(new Node(e.end, e.weight));
-        }
     }
 
     static class Node {
-        int data;
-        int weight;
+        Center center;
+        LinkList adjacency = new LinkList();
 
-        public Node(int data, int weight) {
-            this.data = data;
-            this.weight = weight;
+        public Node(Center center) {
+            this.center = center;
         }
+
+        public void addEdge(Edge edge) {
+            adjacency.add(edge);
+        }
+
+        public LinkList getAdjacency() {return adjacency;}
+
+        public Center getCenter() {return center;}
+
+        public void setCenter(Center center) {this.center = center;}
+
     }
 
     static class Edge {
-        int start;
-        int end;
-        int weight;
+        private int start;
+        private int end;
+        private int weight;
 
         public Edge(int start, int end, int weight) {
             this.start = start;
