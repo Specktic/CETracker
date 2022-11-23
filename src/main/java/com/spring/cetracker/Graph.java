@@ -38,11 +38,6 @@ public class Graph {
         int graphSize = random.nextInt(10, 20);
 
         Graph map = new Graph(graphSize);
-        Center[] cities = new Center[graphSize];
-
-        for (int i = 0; i < graphSize; i++) {
-            cities[i] = new Center("Ciudad " + i);
-        }
 
         for (int i = 0; i < (graphSize * 3); i++) {
             int start = random.nextInt(graphSize);
@@ -51,12 +46,15 @@ public class Graph {
 
             map.addEdge(start, end, weight);
         }
-
-        setCenters(cities);
-
-        showCenters();
-
         return map;
+    }
+
+    public void matchCenters() {
+        setCenters(new Center[vertices.length]);
+
+        for (int i = 0; i < vertices.length; i++) {
+            centers[i] = new Center("Ciudad " + i);
+        }
     }
 
     static class Vertex {
