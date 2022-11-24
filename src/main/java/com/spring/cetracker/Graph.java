@@ -1,37 +1,78 @@
 package com.spring.cetracker;
 
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 public class Graph {
-    private Vertex[] vertices;
-
     private Center[] centers;
+
+    private int vertices;
+    private ArrayList<Integer>[] adjMatrix;
 
     public Graph () {}
 
-    public Graph(int a) {
-        vertices = new Vertex[a];
-
-        for (int i = 0; i < a; i++) {
-            vertices[i] =new Vertex(i);
-        }
+    public Graph(int vertices) {
+        this.vertices = vertices;
+        initializeMatrix();
     }
 
-    public Vertex[] getVertices() {return vertices;}
-
-    public Center[] getCenters() {return centers;}
-    public void setCenters(Center[] centers) {this.centers = centers;}
-    public void showCenters(){
-        for (Center center : centers) {
-            System.out.println(center.getName());
+    private void initializeMatrix() {
+        adjMatrix = new ArrayList[vertices];
+        for (int i = 0; i < vertices; i++) {
+            adjMatrix[i] = new ArrayList<>();
         }
     }
 
     public void addEdge(int start, int end, int weight) {
-        Edge edge = new Edge(start, end, weight);
-        vertices[start].addEdge(edge);
+        adjMatrix[start].add(end);
     }
+
+    public void printPaths(int start, int end) {
+        boolean[] isVisited = new boolean[vertices];
+        ArrayList<Integer> pathList = new ArrayList<>();
+        pathList.add(start);
+        printPathsUtil(start, end, isVisited, pathList);
+    }
+
+    private void printPathsUtil(Integer u, Integer d, boolean[] isVisited, List<Integer> localPathList) {
+        if (u.equals(d)) {
+            System.out.println(localPathList);
+            return;
+        }
+        isVisited[u] = true;
+        for (Integer i : adjMatrix[u]) {
+            if (!isVisited[i]) {
+                if (!localPathList.contains(i)) {
+                    localPathList.add(i);
+                }
+                printPathsUtil(i, d, isVisited, localPathList);
+                localPathList.remove(i);
+            }
+        }
+        isVisited[u] = false;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //Utility methods
 
     public Graph randomGraph(){
         Random random = new Random();
@@ -44,37 +85,41 @@ public class Graph {
             int end = random.nextInt(graphSize);
             int weight = random.nextInt(1, 10);
 
-            map.addEdge(start, end, weight);
+            if (end != start){
+                map.addEdge(start, end, weight);
+            }
         }
         return map;
     }
 
-    public void matchCenters() {
-        setCenters(new Center[vertices.length]);
+    public void makeCenters() {
+        setCenters(new Center[adjMatrix.length]);
 
-        for (int i = 0; i < vertices.length; i++) {
+        for (int i = 0; i < adjMatrix.length; i++) {
             centers[i] = new Center("Ciudad " + i);
         }
     }
 
-    static class Vertex {
+    //Getters and setters
+    public Center[] getCenters() {return centers;}
+    public void setCenters(Center[] centers) {this.centers = centers;}
+
+    public ArrayList<Integer>[] getVertices() {return adjMatrix;}
+
+    //Vertex class
+    class Vertex {
         int id;
-        Center center;
-        LinkList adjacency = new LinkList();
+        LinkedList adjacency = new LinkedList();
 
         public Vertex(int id) {
             this.id = id;
         }
 
-        public void addEdge(Edge edge) {
-            adjacency.add(edge);
-        }
-
-        public Center getCenter() {return center;}
-        public LinkList getAdjacency() {return adjacency;}
+        public LinkedList getAdjacency() {return adjacency;}
         public int getId() {return id;}
     }
 
+    //Edge class
     static class Edge {
         int start;
         int end;
