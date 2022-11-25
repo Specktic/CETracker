@@ -1,134 +1,88 @@
 package com.spring.cetracker;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Random;
 
 public class Graph {
-    private Center[] centers;
 
-    private int vertices;
-    private ArrayList<Integer>[] adjMatrix;
+    List<List<Node>> adjList = new ArrayList<>();
 
-    public Graph () {}
+    public Graph (){}
 
-    public Graph(int vertices) {
-        this.vertices = vertices;
-        initializeMatrix();
-    }
+    public Graph(List<Edge1> edges) {
 
-    private void initializeMatrix() {
-        adjMatrix = new ArrayList[vertices];
-        for (int i = 0; i < vertices; i++) {
-            adjMatrix[i] = new ArrayList<>();
+        for (int i = 0; i < edges.size(); i++) {
+            adjList.add(i, new ArrayList<>());
         }
-    }
 
-    public void addEdge(int start, int end, int weight) {
-        adjMatrix[start].add(end);
-    }
-
-    public void printPaths(int start, int end) {
-        boolean[] isVisited = new boolean[vertices];
-        ArrayList<Integer> pathList = new ArrayList<>();
-        pathList.add(start);
-        printPathsUtil(start, end, isVisited, pathList);
-    }
-
-    private void printPathsUtil(Integer u, Integer d, boolean[] isVisited, List<Integer> localPathList) {
-        if (u.equals(d)) {
-            System.out.println(localPathList);
-            return;
-        }
-        isVisited[u] = true;
-        for (Integer i : adjMatrix[u]) {
-            if (!isVisited[i]) {
-                if (!localPathList.contains(i)) {
-                    localPathList.add(i);
-                }
-                printPathsUtil(i, d, isVisited, localPathList);
-                localPathList.remove(i);
+        for (Edge1 edge: edges) {
+            if (edge.start < adjList.size()) {
+                adjList.get(edge.start).add(new Node(edge.end, edge.weight));
             }
         }
-        isVisited[u] = false;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Utility methods
-
-    public Graph randomGraph(){
+    public List<Edge1> randomizeGraph() {
         Random random = new Random();
-        int graphSize = random.nextInt(10, 20);
+        int edgeAmount = random.nextInt(10, 20);
+        List<Edge1> edges = new LinkedList<>();
 
-        Graph map = new Graph(graphSize);
-
-        for (int i = 0; i < (graphSize * 3); i++) {
-            int start = random.nextInt(graphSize);
-            int end = random.nextInt(graphSize);
+        while (edgeAmount > 0) {
+            int start = random.nextInt(edgeAmount);
+            int end = random.nextInt(edgeAmount);
             int weight = random.nextInt(1, 10);
 
-            if (end != start){
-                map.addEdge(start, end, weight);
+            if (start != end){
+                Edge1 edge1 = new Edge1(start, end, weight);
+                edges.add(edge1);
             }
+            edgeAmount--;
         }
-        return map;
+
+        return edges;
+
     }
 
-    public void makeCenters() {
-        setCenters(new Center[adjMatrix.length]);
+    public void printG(Graph graph) {
+        int srcV = 0;
+        int listSize = graph.adjList.size();
 
-        for (int i = 0; i < adjMatrix.length; i++) {
-            centers[i] = new Center("Ciudad " + i);
+        while (srcV < listSize) {
+            for (Node edge : graph.adjList.get(srcV)) {
+                System.out.println("V" + srcV + "("+ graph.adjList.get(srcV).get(0).getCenter().isDistributes() +")" + " ==> " + "V" + edge.id + "("+ edge.getCenter().isDistributes() +")" + " " + "weight: " + edge.weight);
+            }
+            System.out.println();
+            srcV++;
         }
     }
 
-    //Getters and setters
-    public Center[] getCenters() {return centers;}
-    public void setCenters(Center[] centers) {this.centers = centers;}
-
-    public ArrayList<Integer>[] getVertices() {return adjMatrix;}
-
-    //Vertex class
-    class Vertex {
+    static class Node {
         int id;
-        LinkedList adjacency = new LinkedList();
-
-        public Vertex(int id) {
-            this.id = id;
-        }
-
-        public LinkedList getAdjacency() {return adjacency;}
-        public int getId() {return id;}
-    }
-
-    //Edge class
-    static class Edge {
-        int start;
-        int end;
         int weight;
+        Center center;
 
-        public Edge(int start, int end, int weight) {
-            this.start = start;
-            this.end = end;
+        public Node(int id, int weight) {
+            this.id = id;
             this.weight = weight;
+            this.center = new Center("Centro " + id);
         }
+
+        public Center getCenter() {
+            return center;
+        }
+    }
+}
+
+class Edge1 {
+    int start;
+    int end;
+    int weight;
+
+    public Edge1(int start, int end, int weight) {
+        this.start = start;
+        this.end = end;
+        this.weight = weight;
     }
 }
