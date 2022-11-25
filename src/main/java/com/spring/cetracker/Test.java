@@ -9,6 +9,8 @@ public class Test {
         Graph graph = new Graph();
         Graph map = new Graph(graph.randomizeGraph());
         map.printG(map);
+        map.paths(0,  10);
+
 
     }
 }
